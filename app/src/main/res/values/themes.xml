@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Bishun" parent="Theme.Material3.DayNight">
+    <style name="Theme.Bishun" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/holo_blue_bright</item>
         <item name="colorPrimaryDark">@android:color/holo_blue_dark</item>
         <item name="colorAccent">@android:color/holo_orange_light</item>
+
+        <!-- 确保内容不延伸到系统状态栏区域 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
     </style>
 </resources>
