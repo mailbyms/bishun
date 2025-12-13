@@ -45,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="显示"
-            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp" />
     </LinearLayout>
@@ -89,7 +90,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:text="重新播放"
-        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
         android:paddingHorizontal="20dp"
         android:paddingVertical="12dp" />
 

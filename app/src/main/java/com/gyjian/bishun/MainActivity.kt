@@ -5,19 +5,19 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.webkit.WebChromeClient
-import android.webkit.ConsoleMessage
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import android.view.ViewTreeObserver
-import android.util.DisplayMetrics
 import java.io.IOException
 import java.io.InputStream
 
@@ -137,11 +137,43 @@ class MainActivity : AppCompatActivity() {
             showCharAnimation(selectedCharIndex)
         }
 
+        // 添加按钮按压效果
+        buttonShow.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.alpha = 0.7f
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    view.alpha = 1.0f
+                    view.performClick()
+                    true
+                }
+                else -> false
+            }
+        }
+
         // 重新播放按钮点击事件
         buttonReplay.setOnClickListener {
             // 调用 JavaScript 函数重新播放动画
             val jsCode = "javascript:replayAnimation()"
             webView.evaluateJavascript(jsCode, null)
+        }
+
+        // 添加重新播放按钮按压效果
+        buttonReplay.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.alpha = 0.7f
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    view.alpha = 1.0f
+                    view.performClick()
+                    true
+                }
+                else -> false
+            }
         }
 
         // 输入框回车键事件
@@ -282,6 +314,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSquareWebView() {
+        // 直接设置按钮颜色
+        buttonShow.setBackgroundColor(0xFF1976D2.toInt())
+        buttonReplay.setBackgroundColor(0xFFF57C00.toInt())
+
         // 使用ViewTreeObserver在布局完成后设置正方形尺寸
         webViewContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
