@@ -30,12 +30,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="请输入汉字..."
+            android:hint="请输入1-5个汉字..."
             android:textSize="16sp"
             android:padding="12dp"
             android:background="@android:drawable/edit_text"
             android:maxLines="1"
-            android:maxLength="10" />
+            android:maxLength="5" />
 
         <Button
             android:id="@+id/buttonShow"
@@ -48,17 +48,18 @@
             android:paddingVertical="8dp" />
     </LinearLayout>
 
-    <!-- 重新播放按钮 -->
-    <Button
-        android:id="@+id/buttonReplay"
-        android:layout_width="wrap_content"
+    <!-- 汉字显示区域 -->
+    <LinearLayout
+        android:id="@+id/charsDisplayContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:orientation="horizontal"
         android:layout_marginBottom="16dp"
-        android:text="重新播放"
-        android:textSize="16sp"
-          android:paddingHorizontal="20dp"
-        android:paddingVertical="12dp" />
+        android:gravity="center"
+        android:visibility="gone">
+
+        <!-- 动态添加的汉字按钮会放在这里 -->
+    </LinearLayout>
 
     <!-- WebView 容器 -->
     <LinearLayout
@@ -76,14 +77,16 @@
             android:layout_margin="4dp" />
     </LinearLayout>
 
-    <!-- 说明文字 -->
-    <TextView
-        android:layout_width="match_parent"
+    <!-- 重新播放按钮 -->
+    <Button
+        android:id="@+id/buttonReplay"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="输入汉字后点击显示查看笔顺动画，点击重新播放可重复观看动画效果"
-        android:textSize="12sp"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:textColor="#666" />
+        android:text="重新播放"
+        android:textSize="16sp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="12dp" />
 
 </LinearLayout>

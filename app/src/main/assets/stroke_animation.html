@@ -7,51 +7,41 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             background-color: #f5f5f5;
             font-family: Arial, sans-serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
         .container {
             text-align: center;
             width: 100%;
-            max-width: 600px;
+            height: 100%;
+            max-width: none;
         }
         .embed-container {
-            margin: 20px 0;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 300px;
+            width: 100vw;
+            height: 100vh;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         embed {
             max-width: 100%;
             max-height: 100%;
         }
-        .char-display {
-            font-size: 48px;
-            color: #333;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .info {
-            color: #666;
-            font-size: 14px;
-            margin: 10px 0;
-        }
-    </style>
+      </style>
 </head>
 <body>
     <div class="container">
-        <div id="charDisplay" class="char-display"></div>
-        <div id="info" class="info"></div>
         <div class="embed-container">
-            <div id="svgContainer" style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
+            <div id="svgContainer" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
                 <p style="color: #999; font-size: 14px;">等待输入汉字...</p>
             </div>
         </div>
@@ -60,25 +50,15 @@
     <script>
         function showStrokeAnimation(character) {
             if (!character || character.trim() === '') {
-                document.getElementById('charDisplay').textContent = '';
-                document.getElementById('info').textContent = '请输入汉字';
-                document.getElementById('svgEmbed').src = '';
                 return;
             }
 
             // 获取第一个字符的 Unicode 码点
             const codePoint = character.charCodeAt(0);
-            const svgFileName = codePoint + '.svg';
-
-            // 显示字符和相关信息
-            document.getElementById('charDisplay').textContent = character;
-            document.getElementById('info').textContent = `Unicode: ${codePoint} | 文件: ${svgFileName}`;
 
             // 通过 Android 接口请求 SVG 内容
             if (window.AndroidInterface) {
                 window.AndroidInterface.loadSvg(codePoint);
-            } else {
-                document.getElementById('info').textContent = `Android 接口未找到，无法加载 SVG: ${svgFileName}`;
             }
         }
 
@@ -92,11 +72,11 @@
                 container.removeChild(svgElement);
                 container.appendChild(newSvg);
 
-                // 设置尺寸
-                newSvg.setAttribute('width', '300');
-                newSvg.setAttribute('height', '300');
-                newSvg.style.maxWidth = '100%';
-                newSvg.style.maxHeight = '100%';
+                // 设置尺寸占满容器
+                newSvg.setAttribute('width', '100%');
+                newSvg.setAttribute('height', '100%');
+                newSvg.style.width = '100%';
+                newSvg.style.height = '100%';
             }
         }
 
@@ -111,11 +91,9 @@
                     updateSvgContent(svgContent);
                 } catch (e) {
                     console.error('Base64 解码失败:', e);
-                    document.getElementById('info').textContent = 'SVG 解码失败: ' + e.message;
                 }
             } else {
                 console.error('Base64 SVG 内容为空');
-                document.getElementById('info').textContent = 'SVG 文件未找到或加载失败';
             }
         }
 
@@ -132,28 +110,25 @@
                     container.innerHTML = svgContent;
                     console.log('SVG 内容已插入到容器');
 
-                    // 设置 SVG 的尺寸
+                    // 设置 SVG 的尺寸占满容器
                     const svgElement = container.querySelector('svg');
                     console.log('找到 SVG 元素:', svgElement);
                     if (svgElement) {
-                        svgElement.setAttribute('width', '300');
-                        svgElement.setAttribute('height', '300');
-                        svgElement.style.maxWidth = '100%';
-                        svgElement.style.maxHeight = '100%';
+                        svgElement.setAttribute('width', '100%');
+                        svgElement.setAttribute('height', '100%');
+                        svgElement.style.width = '100%';
+                        svgElement.style.height = '100%';
                         console.log('SVG 尺寸设置完成');
                     } else {
                         console.error('未找到 SVG 元素');
                     }
 
-                    document.getElementById('info').textContent = 'SVG 加载成功';
                     console.log('SVG 加载完成');
                 } catch (e) {
                     console.error('SVG 更新失败:', e);
-                    document.getElementById('info').textContent = 'SVG 更新失败: ' + e.message;
                 }
             } else {
                 console.error('SVG 内容为空');
-                document.getElementById('info').textContent = 'SVG 文件未找到或加载失败';
             }
         }
 
@@ -162,11 +137,6 @@
         window.replayAnimation = replayAnimation;
         window.updateSvgContent = updateSvgContent;
 
-        // 页面加载完成后显示默认信息
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('charDisplay').textContent = '汉字笔顺';
-            document.getElementById('info').textContent = '请在应用中输入汉字查看笔顺动画';
-        });
-    </script>
+            </script>
 </body>
 </html>

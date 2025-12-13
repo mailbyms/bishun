@@ -13,6 +13,7 @@ import android.webkit.WebChromeClient
 import android.webkit.ConsoleMessage
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextInput: EditText
     private lateinit var buttonShow: Button
     private lateinit var buttonReplay: Button
+    private lateinit var charsDisplayContainer: LinearLayout
+
+    private var currentChars: String = ""
+    private var selectedCharIndex: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         editTextInput = findViewById(R.id.editTextInput)
         buttonShow = findViewById(R.id.buttonShow)
         buttonReplay = findViewById(R.id.buttonReplay)
+        charsDisplayContainer = findViewById(R.id.charsDisplayContainer)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -113,9 +119,15 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 调用 JavaScript 函数显示笔顺动画
-            val jsCode = "javascript:showStrokeAnimation('$inputText')"
-            webView.evaluateJavascript(jsCode, null)
+            // 设置当前字符和选中第一个字符
+            currentChars = inputText
+            selectedCharIndex = 0
+
+            // 显示字符选择按钮
+            displayCharButtons()
+
+            // 显示第一个字符的动画
+            showCharAnimation(selectedCharIndex)
         }
 
         // 重新播放按钮点击事件
@@ -133,6 +145,60 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+    }
+
+    private fun displayCharButtons() {
+        // 清空之前的按钮
+        charsDisplayContainer.removeAllViews()
+
+        // 为每个字符创建按钮
+        for ((index, char) in currentChars.withIndex()) {
+            val button = Button(this)
+            button.text = char.toString()
+            button.textSize = 20f
+            button.setPadding(24, 16, 24, 16)
+
+            // 设置按钮样式
+            if (index == selectedCharIndex) {
+                button.setBackgroundColor(resources.getColor(android.R.color.holo_blue_dark, theme))
+                button.setTextColor(resources.getColor(android.R.color.white, theme))
+            } else {
+                button.setBackgroundColor(resources.getColor(android.R.color.darker_gray, theme))
+                button.setTextColor(resources.getColor(android.R.color.black, theme))
+            }
+
+            // 设置点击事件
+            button.setOnClickListener {
+                selectedCharIndex = index
+                displayCharButtons() // 重新渲染按钮以更新选中状态
+                showCharAnimation(index)
+            }
+
+            // 添加到容器
+            charsDisplayContainer.addView(button)
+
+            // 添加边距
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(8, 0, 8, 0)
+            button.layoutParams = params
+        }
+
+        // 显示容器
+        charsDisplayContainer.visibility = View.VISIBLE
+    }
+
+    private fun showCharAnimation(index: Int) {
+        if (index < 0 || index >= currentChars.length) return
+
+        val char = currentChars[index]
+        Log.d("MainActivity", "显示字符动画: $char (索引: $index)")
+
+        // 调用 JavaScript 函数显示笔顺动画
+        val jsCode = "javascript:showStrokeAnimation('$char')"
+        webView.evaluateJavascript(jsCode, null)
     }
 
     override fun onBackPressed() {
