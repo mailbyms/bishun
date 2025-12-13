@@ -16,6 +16,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewTreeObserver
+import android.util.DisplayMetrics
 import java.io.IOException
 import java.io.InputStream
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonShow: Button
     private lateinit var buttonReplay: Button
     private lateinit var charsDisplayContainer: LinearLayout
+    private lateinit var webViewContainer: LinearLayout
 
     private var currentChars: String = ""
     private var selectedCharIndex: Int = 0
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         buttonShow = findViewById(R.id.buttonShow)
         buttonReplay = findViewById(R.id.buttonReplay)
         charsDisplayContainer = findViewById(R.id.charsDisplayContainer)
+        webViewContainer = findViewById(R.id.webViewContainer)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -108,6 +112,9 @@ class MainActivity : AppCompatActivity() {
         // 初始状态下禁用按钮，等待页面加载完成
         buttonShow.isEnabled = false
         buttonReplay.isEnabled = false
+
+        // 设置WebView为正方形
+        setupSquareWebView()
     }
 
     private fun setupListeners() {
@@ -156,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             val button = Button(this)
             button.text = char.toString()
             button.textSize = 20f
-            button.setPadding(24, 16, 24, 16)
+            button.setPadding(6, 8, 6, 8)
 
             // 设置按钮样式
             if (index == selectedCharIndex) {
@@ -177,12 +184,13 @@ class MainActivity : AppCompatActivity() {
             // 添加到容器
             charsDisplayContainer.addView(button)
 
-            // 添加边距
+            // 设置等分宽度，确保所有按钮平均分配空间
             val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                0, // 宽度为0，使用weight来分配
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            params.setMargins(8, 0, 8, 0)
+            params.weight = 1.0f
+            params.setMargins(2, 0, 2, 0) // 减少间距以节省空间
             button.layoutParams = params
         }
 
@@ -271,5 +279,25 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "读取 SVG 文件失败: $codePoint.svg", e)
             null
         }
+    }
+
+    private fun setupSquareWebView() {
+        // 使用ViewTreeObserver在布局完成后设置正方形尺寸
+        webViewContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // 移除监听器避免重复调用
+                webViewContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                // 获取容器的宽度
+                val containerWidth = webViewContainer.width
+
+                // 设置容器为正方形
+                val layoutParams = webViewContainer.layoutParams
+                layoutParams.height = containerWidth
+                webViewContainer.layoutParams = layoutParams
+
+                Log.d("MainActivity", "WebView容器设置为正方形: ${containerWidth}x${containerWidth}")
+            }
+        })
     }
 }
