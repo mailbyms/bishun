@@ -1,47 +1,205 @@
 package com.gyjian.bishun
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.gyjian.bishun.ui.theme.BishunTheme
+import android.util.Log
+import android.view.KeyEvent
+import android.view.View
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.webkit.WebChromeClient
+import android.webkit.ConsoleMessage
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
+import java.io.InputStream
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var webView: WebView
+    private lateinit var editTextInput: EditText
+    private lateinit var buttonShow: Button
+    private lateinit var buttonReplay: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            BishunTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+        setContentView(R.layout.activity_main)
+
+        initViews()
+        setupWebView()
+        setupListeners()
+    }
+
+    private fun initViews() {
+        webView = findViewById(R.id.webViewStroke)
+        editTextInput = findViewById(R.id.editTextInput)
+        buttonShow = findViewById(R.id.buttonShow)
+        buttonReplay = findViewById(R.id.buttonReplay)
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
+        // 启用 JavaScript 和调试
+        WebView.setWebContentsDebuggingEnabled(true)
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        webView.settings.allowFileAccess = true
+        webView.settings.allowContentAccess = true
+
+        // 添加 JavaScript 接口
+        webView.addJavascriptInterface(WebAppInterface(this), "AndroidInterface")
+
+        // 设置 WebViewClient 以处理页面加载
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                Log.d("MainActivity", "WebView 页面加载完成: $url")
+                // 页面加载完成后启用按钮
+                buttonShow.isEnabled = true
+                buttonReplay.isEnabled = true
+
+                // 测试 JavaScript 连接
+                webView.evaluateJavascript("console.log('JavaScript 连接测试')") { result ->
+                    Log.d("MainActivity", "JavaScript 测试结果: $result")
+                }
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                errorCode: Int,
+                description: String?,
+                failingUrl: String?
+            ) {
+                super.onReceivedError(view, errorCode, description, failingUrl)
+                Log.e("MainActivity", "WebView 加载错误: $description, URL: $failingUrl")
+                Toast.makeText(this@MainActivity, "加载页面出错: $description", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 设置 WebChromeClient 以显示进度和控制台
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                consoleMessage?.let {
+                    Log.d("WebViewConsole", "${it.messageLevel()} at ${it.sourceId()}:${it.lineNumber()} - ${it.message()}")
+                }
+                return true
+            }
+        }
+
+        // 加载本地 HTML 文件
+        val htmlUrl = "file:///android_asset/stroke_animation.html"
+        Log.d("MainActivity", "加载 HTML 文件: $htmlUrl")
+        webView.loadUrl(htmlUrl)
+
+        // 初始状态下禁用按钮，等待页面加载完成
+        buttonShow.isEnabled = false
+        buttonReplay.isEnabled = false
+    }
+
+    private fun setupListeners() {
+        // 显示按钮点击事件
+        buttonShow.setOnClickListener {
+            val inputText = editTextInput.text.toString().trim()
+            if (inputText.isEmpty()) {
+                Toast.makeText(this, "请输入汉字", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 调用 JavaScript 函数显示笔顺动画
+            val jsCode = "javascript:showStrokeAnimation('$inputText')"
+            webView.evaluateJavascript(jsCode, null)
+        }
+
+        // 重新播放按钮点击事件
+        buttonReplay.setOnClickListener {
+            // 调用 JavaScript 函数重新播放动画
+            val jsCode = "javascript:replayAnimation()"
+            webView.evaluateJavascript(jsCode, null)
+        }
+
+        // 输入框回车键事件
+        editTextInput.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                buttonShow.performClick()
+                return@setOnKeyListener true
+            }
+            false
+        }
+    }
+
+    override fun onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onDestroy() {
+        // 清理 WebView 资源
+        webView.destroy()
+        super.onDestroy()
+    }
+
+    /**
+     * JavaScript 接口类，用于 WebView 与 Android 之间的通信
+     */
+    inner class WebAppInterface(private val context: Context) {
+
+        /**
+         * 加载指定 Unicode 码点的 SVG 文件
+         */
+        @JavascriptInterface
+        fun loadSvg(codePoint: Int) {
+            Log.d("MainActivity", "开始加载 SVG: $codePoint")
+            val svgContent = readSvgFromAssets(codePoint)
+            // 在主线程中更新 WebView
+            runOnUiThread {
+                if (svgContent != null) {
+                    Log.d("MainActivity", "SVG 读取成功，长度: ${svgContent.length}")
+                    // 将 SVG 内容编码为 Base64 来避免转义问题
+                    val encodedSvg = android.util.Base64.encodeToString(
+                        svgContent.toByteArray(Charsets.UTF_8),
+                        android.util.Base64.NO_WRAP
                     )
+                    Log.d("MainActivity", "Base64 编码长度: ${encodedSvg.length}")
+                    val jsCode = "javascript:updateSvgContentFromBase64('$encodedSvg')"
+                    Log.d("MainActivity", "执行 JavaScript: ${jsCode.take(100)}...")
+                    webView.evaluateJavascript(jsCode) { result ->
+                        Log.d("MainActivity", "JavaScript 执行结果: $result")
+                    }
+                } else {
+                    Log.w("MainActivity", "SVG 文件未找到: $codePoint")
+                    val jsCode = "javascript:updateSvgContent('')"
+                    webView.evaluateJavascript(jsCode, null)
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BishunTheme {
-        Greeting("Android")
+    /**
+     * 从 assets 目录读取 SVG 文件内容
+     */
+    private fun readSvgFromAssets(codePoint: Int): String? {
+        return try {
+            val fileName = "$codePoint.svg"
+            Log.d("MainActivity", "尝试读取文件: stroke_svgs/$fileName")
+            val inputStream: InputStream = assets.open("stroke_svgs/$fileName")
+            val size = inputStream.available()
+            Log.d("MainActivity", "文件大小: $size bytes")
+            val buffer = ByteArray(size)
+            val bytesRead = inputStream.read(buffer)
+            inputStream.close()
+            val content = String(buffer, Charsets.UTF_8)
+            Log.d("MainActivity", "成功读取文件，读取字节数: $bytesRead")
+            content
+        } catch (e: IOException) {
+            Log.e("MainActivity", "读取 SVG 文件失败: $codePoint.svg", e)
+            null
+        }
     }
 }
