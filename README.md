@@ -54,7 +54,7 @@ app/
 ## 🔧 开发指南
 - 汉字SVG文件来自 https://github.com/skishore/makemeahanzi
 - SVG文件命名规则：x.charCodeAt(0) 再加后缀 .svg
-- 本项目个性了 svg 文件里的颜色，统一为深红色 crimson
+- 本项目修改了 svg 文件里的颜色，统一为深红色 crimson
   ```zsh
   sed -i '' -E 's/\b(black|blue)\b/crimson/g' *.svg(N)
   ```
