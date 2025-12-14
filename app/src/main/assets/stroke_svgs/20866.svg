@@ -10,18 +10,18 @@
       
         @keyframes keyframes0 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 925;
             stroke-width: 128;
           }
           75% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -33,18 +33,18 @@
       
         @keyframes keyframes1 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 1578;
             stroke-width: 128;
           }
           84% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }

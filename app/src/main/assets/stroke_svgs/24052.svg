@@ -10,18 +10,18 @@
       
         @keyframes keyframes0 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 859;
             stroke-width: 128;
           }
           74% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -33,18 +33,18 @@
       
         @keyframes keyframes1 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 451;
             stroke-width: 128;
           }
           59% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -56,18 +56,18 @@
       
         @keyframes keyframes2 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 665;
             stroke-width: 128;
           }
           68% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -79,18 +79,18 @@
       
         @keyframes keyframes3 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 1632;
             stroke-width: 128;
           }
           84% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }

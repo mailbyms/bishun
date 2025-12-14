@@ -10,18 +10,18 @@
       
         @keyframes keyframes0 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 813;
             stroke-width: 128;
           }
           73% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -33,18 +33,18 @@
       
         @keyframes keyframes1 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 872;
             stroke-width: 128;
           }
           74% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }
@@ -56,18 +56,18 @@
       
         @keyframes keyframes2 {
           from {
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 614;
             stroke-width: 128;
           }
           67% {
             animation-timing-function: step-end;
-            stroke: blue;
+            stroke: crimson;
             stroke-dashoffset: 0;
             stroke-width: 128;
           }
           to {
-            stroke: black;
+            stroke: crimson;
             stroke-width: 1024;
           }
         }

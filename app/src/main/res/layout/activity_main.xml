@@ -33,6 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="请输入1-5个汉字..."
+            android:textColorHint="#999999"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:padding="12dp"
             android:background="@android:drawable/edit_text"

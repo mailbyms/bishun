@@ -52,11 +52,12 @@ app/
 - `bishun_v1.0_debug_universal.apk`
 
 ## 🔧 开发指南
-
-### 添加新汉字
-1. 将汉字SVG文件放入 `app/src/main/assets/stroke_svgs/`
-2. 更新数据库脚本
-3. 重新构建应用
+- 汉字SVG文件来自 https://github.com/skishore/makemeahanzi
+- SVG文件命名规则：x.charCodeAt(0) 再加后缀 .svg
+- 本项目个性了 svg 文件里的颜色，统一为深红色 crimson
+  ```zsh
+  sed -i '' -E 's/\b(black|blue)\b/crimson/g' *.svg(N)
+  ```
 
 
 
