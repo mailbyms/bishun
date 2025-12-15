@@ -103,29 +103,6 @@
         @keyframes keyframes4 {
           from {
             stroke: crimson;
-            stroke-dashoffset: 882;
-            stroke-width: 128;
-          }
-          74% {
-            animation-timing-function: step-end;
-            stroke: crimson;
-            stroke-dashoffset: 0;
-            stroke-width: 128;
-          }
-          to {
-            stroke: crimson;
-            stroke-width: 1024;
-          }
-        }
-        #make-me-a-hanzi-animation-4 {
-          animation: keyframes4 0.9677734375s both;
-          animation-delay: 2.7097981770833335s;
-          animation-timing-function: linear;
-        }
-      
-        @keyframes keyframes5 {
-          from {
-            stroke: crimson;
             stroke-dashoffset: 481;
             stroke-width: 128;
           }
@@ -140,11 +117,34 @@
             stroke-width: 1024;
           }
         }
-        #make-me-a-hanzi-animation-5 {
+        #make-me-a-hanzi-animation-4 {
           animation: keyframes5 0.6414388020833334s both;
           animation-delay: 3.6775716145833335s;
           animation-timing-function: linear;
         }
+
+      @keyframes keyframes5 {
+      from {
+      stroke: crimson;
+      stroke-dashoffset: 882;
+      stroke-width: 128;
+      }
+      74% {
+      animation-timing-function: step-end;
+      stroke: crimson;
+      stroke-dashoffset: 0;
+      stroke-width: 128;
+      }
+      to {
+      stroke: crimson;
+      stroke-width: 1024;
+      }
+      }
+      #make-me-a-hanzi-animation-5 {
+      animation: keyframes4 0.9677734375s both;
+      animation-delay: 2.7097981770833335s;
+      animation-timing-function: linear;
+      }
       
         @keyframes keyframes6 {
           from {
